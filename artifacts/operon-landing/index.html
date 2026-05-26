@@ -21,6 +21,16 @@
       gtag('js', new Date());
       gtag('config', 'G-ZMCKE3ZC23');
     </script>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const client = params.get('client');
+
+      if (client) {
+        gtag('event', 'client_visit', {
+          client_name: client
+        });
+      }
+    </script>
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png" />
