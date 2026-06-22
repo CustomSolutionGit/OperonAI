@@ -141,8 +141,7 @@ The landing currently tracks:
 
 1. initial page view
 2. `cta_click` for `Book a Demo`
-3. `cta_click` for `See how AI SDR works`
-4. `calendly_open` when the user clicks through to Calendly
+3. `calendly_open` when the user clicks through to Calendly
 
 CTA tracking is attached in:
 
