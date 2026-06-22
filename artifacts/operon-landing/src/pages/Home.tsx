@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Database, Users, LineChart, Cpu, FileSearch, Send, ShieldCheck, CheckCircle2, House } from "lucide-react";
 import { trackCalendlyClick, trackCtaClick } from "../lib/analytics";
@@ -16,10 +17,26 @@ const staggerContainer: Variants = {
 };
 
 const primaryCtaClass = "inline-flex min-h-14 w-full cursor-pointer items-center justify-center rounded-xl bg-primary px-8 text-lg font-medium text-primary-foreground shadow-[0_0_30px_-5px_hsl(var(--primary))] transition-all hover:brightness-110 sm:w-auto";
-const secondaryCtaClass = "inline-flex min-h-14 w-full cursor-pointer items-center justify-center rounded-xl border border-white/10 px-8 text-lg text-foreground transition-all hover:bg-white/5 sm:w-auto";
 const outlineCtaClass = "inline-flex min-h-10 cursor-pointer items-center justify-center rounded-xl border border-primary/50 px-4 text-sm font-medium text-primary transition-all hover:bg-primary/10";
 
 export default function Home() {
+  const [expandedStep, setExpandedStep] = useState<string | null>(null);
+  const [supportsHover, setSupportsHover] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const syncSupportsHover = () => {
+      setSupportsHover(mediaQuery.matches);
+    };
+
+    syncSupportsHover();
+    mediaQuery.addEventListener("change", syncSupportsHover);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncSupportsHover);
+    };
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -29,8 +46,10 @@ export default function Home() {
     trackCalendlyClick(location);
   };
 
-  const handleSeeHowClick = (location: string) => {
-    trackCtaClick("See how AI SDR works", location);
+  const handleStepClick = (stepNum: string) => {
+    if (supportsHover) return;
+
+    setExpandedStep((currentStep) => (currentStep === stepNum ? null : stepNum));
   };
 
   return (
@@ -72,21 +91,16 @@ export default function Home() {
             </motion.div>
             
             <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl font-bold font-display leading-[1.1] tracking-tight mb-8">
-              AI SDR employee for cold outreach <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">inside your infrastructure</span>
+              AI SDR employee for cold outreach <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">does 60–80% of SDR work</span>
             </motion.h1>
             
             <motion.p variants={fadeInUp} className="text-xl text-muted-foreground mb-12 max-w-2xl leading-relaxed">
-              Operon is not a SaaS tool. It's an autonomous AI employee you deploy once — and own.
+              Operon is not a SaaS tool. It's your own AI SDR employee — deployed by us, owned by you.
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center gap-4">
               <a href="https://calendly.com/operonai/30min" target="_blank" rel="noopener noreferrer" className={primaryCtaClass} data-testid="cta-book-demo-hero" onClick={() => handleBookDemoClick("hero") }>
                 <span>Book a Demo</span>
-              </a>
-              <a href="#how-it-works" className={secondaryCtaClass} data-testid="cta-see-how-hero" onClick={() => handleSeeHowClick("hero") }>
-                <span>
-                  See how AI SDR works
-                </span>
               </a>
             </motion.div>
           </motion.div>
@@ -118,9 +132,9 @@ export default function Home() {
                 <div className="w-12 h-12 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center mb-6">
                   <Database className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold font-display mb-4">Outreach tools don't scale without data leakage</h3>
+                <h3 className="text-xl font-bold font-display mb-4">Your outreach stack is expensive and fragmented</h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Every tool you add means another vendor touching your prospect data. You lose control over lists, sequences, and results. GDPR and enterprise buyers notice.
+                  Apollo, Instantly, warm-up tools, email accounts — and you're still doing half the work manually. More tools don't mean less work.
                 </p>
               </motion.div>
 
@@ -138,14 +152,14 @@ export default function Home() {
         </section>
 
         {/* Section 3 - Workflow */}
-        <section id="how-it-works" className="container mx-auto scroll-mt-28 px-6 py-32 relative">
+        <section id="how-it-works" className="container mx-auto scroll-mt-28 px-6 py-28 relative">
           <motion.div
             initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
             variants={fadeInUp}
-            className="text-center mb-24"
+            className="text-center mb-20"
           >
             <h2 className="text-4xl md:text-5xl font-bold font-display mb-6">How Operon works end-to-end</h2>
-            <p className="text-xl text-muted-foreground">Seven automated steps. One deployment. Your infrastructure.</p>
+            <p className="text-xl text-muted-foreground">Seven automated steps. One deployment. </p>
           </motion.div>
 
           <div className="max-w-4xl mx-auto relative">
@@ -163,14 +177,26 @@ export default function Home() {
             ].map((step, idx) => {
               const isEven = idx % 2 !== 0;
               const Icon = step.icon;
+              const isExpanded = expandedStep === step.num;
+
               return (
                 <motion.div 
                   key={step.num}
-                  initial={{ opacity: 0, y: 40 }}
+                  initial={{ opacity: 0, y: 56 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
+                  viewport={{ amount: 0.65 }}
                   transition={{ duration: 0.6, delay: idx * 0.1 }}
-                  className={`relative flex items-center justify-between mb-16 md:mb-24 ${isEven ? 'md:flex-row-reverse' : ''} flex-row`}
+                  className={`relative flex items-start justify-between mb-12 md:mb-14 ${isEven ? 'md:flex-row-reverse' : ''} flex-row`}
+                  onMouseEnter={() => {
+                    if (supportsHover) {
+                      setExpandedStep(step.num);
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (supportsHover) {
+                      setExpandedStep((currentStep) => (currentStep === step.num ? null : currentStep));
+                    }
+                  }}
                 >
                   <div className={`hidden md:block w-5/12 ${isEven ? 'text-left' : 'text-right'}`} />
                   
@@ -181,12 +207,24 @@ export default function Home() {
 
                   {/* Card */}
                   <div className="w-full md:w-5/12 pl-20 md:pl-0">
-                    <div className="glass-card p-6 md:p-8 rounded-2xl hover:-translate-y-1 transition-transform duration-300 relative group">
-                      <div className="absolute inset-0 bg-primary/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <Icon className="w-8 h-8 text-primary mb-4" />
-                      <h3 className="text-xl font-bold font-display mb-3">{step.title}</h3>
-                      <p className="text-muted-foreground">{step.desc}</p>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleStepClick(step.num)}
+                      aria-expanded={isExpanded}
+                      className="glass-card w-full rounded-2xl border border-white/5 bg-background/60 p-5 text-left transition-colors duration-300 hover:bg-background/80 md:p-6"
+                    >
+                      <div className="flex items-center gap-4">
+                        <Icon className="h-7 w-7 shrink-0 text-primary" />
+                        <h3 className="text-lg md:text-xl font-bold font-display">{step.title}</h3>
+                      </div>
+                      <div
+                        className={`grid transition-all duration-300 ease-out ${isExpanded ? "mt-4 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+                      >
+                        <div className="overflow-hidden">
+                          <p className="text-muted-foreground">{step.desc}</p>
+                        </div>
+                      </div>
+                    </button>
                   </div>
                 </motion.div>
               );
@@ -221,10 +259,10 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-full h-1/2 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
             <h2 className="text-3xl md:text-5xl font-bold font-display mb-8 text-white">You own the AI. Not the other way around.</h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 text-left md:text-center">
-              Most AI outreach tools are rented intelligence — you pay monthly, they own your data, and the day you cancel, everything disappears. Operon is different. We deploy the AI once into your infrastructure. Your data never leaves your stack. Your sequences, your prospect lists, your results — all yours. Forever.
+              No infrastructure? We can host it in the cloud. Prefer your own stack? We can deploy it there too. Either way, the AI works for you — and belongs to you. No lock-in, no hidden dependencies. You pay only after setup, testing, and approval — if you're satisfied with the result.
             </p>
             <div className="text-primary font-medium">
-              Deploy once. Own forever.
+              Run first. Pay after. Own it fully.
             </div>
           </motion.div>
         </section>
@@ -237,21 +275,16 @@ export default function Home() {
             className="max-w-3xl mx-auto text-center"
           >
             <motion.h2 variants={fadeInUp} className="text-4xl md:text-6xl font-bold font-display mb-6">
-              Ready to deploy your AI SDR?
+              Ready to hire your AI SDR employee?
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-xl text-muted-foreground mb-12">
-              $2,000 one-time setup. Book a call and we'll scope your infrastructure in 30 minutes.
+              $2,000 one-time setup. Book a call and we'll map out your outbound workflow in 30 minutes.
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
               <a href="https://calendly.com/operonai/30min" target="_blank" rel="noopener noreferrer" className={`${primaryCtaClass} min-h-16 px-10 text-xl font-bold`} data-testid="cta-book-demo-footer" onClick={() => handleBookDemoClick("footer") }>
                 <span>
                   Book a Demo
-                </span>
-              </a>
-              <a href="#how-it-works" className={`${secondaryCtaClass} min-h-16 px-10`} data-testid="cta-see-how-footer" onClick={() => handleSeeHowClick("footer") }>
-                <span>
-                  See how AI SDR works
                 </span>
               </a>
             </motion.div>
