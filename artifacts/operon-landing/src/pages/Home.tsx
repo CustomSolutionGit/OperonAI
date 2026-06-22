@@ -232,22 +232,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Section 4 - What's Included */}
-        <section className="container mx-auto px-6 py-24 border-y border-white/5 bg-white/[0.02]">
-          <motion.div
-            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
-            variants={staggerContainer}
-            className="max-w-5xl mx-auto"
-          >
-            <motion.div variants={fadeInUp} className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Everything you need to run outbound AI</h2>
-              <p className="text-primary font-medium">$2,000 one-time setup — no monthly fees, no per-seat pricing</p>
-            </motion.div>
-
-          </motion.div>
-        </section>
-
-        {/* Section 5 - Ownership Message */}
+        {/* Section 4 - Ownership Message */}
         <section className="container mx-auto px-6 py-32 text-center">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -259,11 +244,29 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-full h-1/2 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
             <h2 className="text-3xl md:text-5xl font-bold font-display mb-8 text-white">You own the AI. Not the other way around.</h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 text-left md:text-center">
-              No infrastructure? We can host it in the cloud. Prefer your own stack? We can deploy it there too. Either way, the AI works for you — and belongs to you. No lock-in, no hidden dependencies. You pay only after setup, testing, and approval — if you're satisfied with the result.
+              No infrastructure? We can host it in the cloud. Prefer your own stack? We can deploy it there too. Either way, the AI works for you — and belongs to you. No lock-in, no hidden dependencies. 
             </p>
             <div className="text-primary font-medium">
               Run first. Pay after. Own it fully.
             </div>
+          </motion.div>
+        </section>
+
+        {/* Section 5 - What's Included */}
+        <section className="container mx-auto px-6 py-24 border-y border-white/5 bg-white/[0.02]">
+          <motion.div
+            initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }}
+            variants={staggerContainer}
+            className="max-w-5xl mx-auto"
+          >
+            <motion.div variants={fadeInUp} className="text-center mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Everything you need to run outbound AI</h2>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 text-left md:text-center">
+               You pay only after setup, testing, and approval — if you're satisfied with the result.
+            </p>
+              <p className="text-primary font-medium">$2,000 one-time setup — no monthly fees, no per-seat pricing</p>
+            </motion.div>
+
           </motion.div>
         </section>
 
