@@ -22,6 +22,7 @@ const outlineCtaClass = "inline-flex min-h-10 cursor-pointer items-center justif
 export default function Home() {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   const [supportsHover, setSupportsHover] = useState(false);
+  const [isSubMode, setIsSubMode] = useState(false);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
@@ -35,6 +36,11 @@ export default function Home() {
     return () => {
       mediaQuery.removeEventListener("change", syncSupportsHover);
     };
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setIsSubMode(params.get("sub") === "true");
   }, []);
 
   const scrollToTop = () => {
@@ -85,17 +91,21 @@ export default function Home() {
             initial="hidden" animate="visible" variants={staggerContainer}
             className="max-w-4xl mx-auto text-center flex flex-col items-center"
           >
-            <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-8">
-              <ShieldCheck className="w-4 h-4" />
-              <span>$2,000 one-time setup</span>
-            </motion.div>
+            {!isSubMode ? (
+              <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary text-sm font-medium mb-8">
+                <ShieldCheck className="w-4 h-4" />
+                <span>$2,000 one-time setup</span>
+              </motion.div>
+            ) : null}
             
             <motion.h1 variants={fadeInUp} className="text-5xl md:text-7xl font-bold font-display leading-[1.1] tracking-tight mb-8">
               AI SDR employee for cold outreach <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-cyan-400">does 60–80% of SDR work</span>
             </motion.h1>
             
             <motion.p variants={fadeInUp} className="text-xl text-muted-foreground mb-12 max-w-2xl leading-relaxed">
-              Operon is not a SaaS tool. It's your own AI SDR employee — deployed by us, owned by you.
+              {isSubMode
+                ? "Operon works like an AI SDR — without hiring one."
+                : "Operon is not a SaaS tool. It's your own AI SDR employee — deployed by us, owned by you."}
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center gap-4">
@@ -244,10 +254,14 @@ export default function Home() {
             <div className="absolute top-0 right-0 w-full h-1/2 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
             <h2 className="text-3xl md:text-5xl font-bold font-display mb-8 text-white">You own the AI. Not the other way around.</h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 text-left md:text-center">
-              No infrastructure? We can host it in the cloud. Prefer your own stack? We can deploy it there too. Either way, the AI works for you — and belongs to you. No lock-in, no hidden dependencies. 
+              {isSubMode
+                ? "No setup headaches. No complex workflows. Just connect your tools, define your ICP, and let Operon handle prospecting, research, and personalized outreach."
+                : "No infrastructure? We can host it in the cloud. Prefer your own stack? We can deploy it there too. Either way, the AI works for you — and belongs to you. No lock-in, no hidden dependencies."}             
             </p>
             <div className="text-primary font-medium">
-              Run first. Pay after. Own it fully.
+              {isSubMode
+                ? "Start fast. Scale when ready."
+                : "Run first. Pay after. Own it fully."}             
             </div>
           </motion.div>
         </section>
@@ -262,9 +276,15 @@ export default function Home() {
             <motion.div variants={fadeInUp} className="text-center mb-16">
               <h2 className="text-3xl md:text-4xl font-bold font-display mb-4">Everything you need to run outbound AI</h2>
             <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 text-left md:text-center">
-               You pay only after setup, testing, and approval — if you're satisfied with the result.
+              {isSubMode
+                ? "Connect your email, define your ICP, and launch your first outbound workflow fast. Cancel anytime. No long-term contracts."
+                : "You pay only after setup, testing, and approval — if you're satisfied with the result."}             
             </p>
-              <p className="text-primary font-medium">$2,000 one-time setup — no monthly fees, no per-seat pricing</p>
+              <p className="text-primary font-medium">
+              {isSubMode
+                ? "$99/month"
+                : "$2,000 one-time setup — no monthly fees, no per-seat pricing."}                  
+                </p>
             </motion.div>
 
           </motion.div>
@@ -281,7 +301,9 @@ export default function Home() {
               Ready to hire your AI SDR employee?
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-xl text-muted-foreground mb-12">
-              $2,000 one-time setup. Book a call and we'll map out your outbound workflow in 30 minutes.
+              {isSubMode
+                ? "$99/month. Book a call and we'll map out your outbound workflow in 30 minutes."
+                : "$2,000 one-time setup. Book a call and we'll map out your outbound workflow in 30 minutes."}
             </motion.p>
             
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-12">
@@ -293,8 +315,12 @@ export default function Home() {
             </motion.div>
 
             <motion.div variants={fadeInUp} className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-sm text-muted-foreground font-medium">
-              <span>No monthly fees</span>
-              <span className="hidden sm:inline">·</span>
+              {!isSubMode ? (
+              <>
+                <span>No monthly fees</span>
+                <span className="hidden sm:inline">·</span>
+              </>
+              ) : null}              
               <span>No data leakage</span>
               <span className="hidden sm:inline">·</span>
               <span>Full ownership</span>
